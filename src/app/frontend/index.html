@@ -279,6 +279,11 @@
                     }
                     pushContent.innerHTML = content;
                     pushResultDiv.classList.remove('hidden');
+                    hideAddDataModal(); // Dismiss the popup
+                    // Clear input fields
+                    document.getElementById('dataName').value = '';
+                    document.getElementById('dataCategory').value = '';
+                    document.getElementById('dataPrice').value = '';
                 } else {
                     errorMessage.textContent = data.error || 'An unknown error occurred.';
                     errorDiv.classList.remove('hidden');
