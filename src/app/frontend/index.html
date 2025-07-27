@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Fetcher, Lister & Pusher (Redis/MongoDB)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="bg-white p-8 rounded-lg shadow-xl max-w-max mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Data Fetcher, Lister & Pusher</h1>
+
+        <div class="flex items-center justify-center mb-6">
+            <span class="text-gray-700 mr-3">View as:</span>
+            <div class="flex items-center">
+                <input type="radio" name="viewType" id="tableView" value="table" checked class="mr-1">
+                <label for="tableView" class="mr-4">Table</label>
+                <input type="radio" name="viewType" id="jsonView" value="json" class="mr-1">
+                <label for="jsonView">JSON</label>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <button onclick="showAddDataModal()"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
+                Add New Data
+            </button>
+
+            
+
+            <button onclick="listAllData()"
+                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
+                List All Data
+            </button>
+        </div>
+
+        <div id="result" class="mt-8 hidden">
+            <p class="text-lg font-semibold text-gray-800 mb-2">Result:</p>
+            <div id="dataContent" class="text-gray-900 text-sm whitespace-pre-wrap break-words"></div>
+            <p class="text-sm text-gray-600 mt-4">Source: <span id="dataSource" class="font-medium text-blue-700"></span></p>
+        </div>
+
+        <div id="pushResult" class="mt-8 hidden">
+            <p class="text-lg font-semibold text-gray-800 mb-2">Push/Delete Result:</p>
+            <div id="pushContent" class="text-gray-900 text-sm whitespace-pre-wrap break-words"></div>
+        </div>
+
+        <div id="error" class="mt-8 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg hidden">
+            <p class="font-semibold">Error:</p>
+            <p id="errorMessage" class="text-sm"></p>
+        </div>
+
+        <div id="listResult" class="mt-8 hidden">
+            <p class="text-lg font-semibold text-gray-800 mb-2">All Data List:</p>
+            <div id="listContent" class="text-gray-900 text-sm whitespace-pre-wrap break-words"></div>
+            <p class="text-sm text-gray-600 mt-4">Source: <span id="listSource" class="font-medium text-green-700"></span></p>
+        </div>
+    </div>
+
+    <!-- Add Data Modal -->
+    <div id="addDataModal" class="fixed inset-0 modal-overlay flex items-center justify-center p-4 hidden">
+        <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Data</h2>
+            <div class="space-y-4">
+                <div>
+                    <label for="dataName" class="block text-gray-700 text-sm font-semibold mb-2">Name:</label>
+                    <input type="text" id="dataName" placeholder="e.g., Magic Lamp"
+                           class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="dataCategory" class="block text-gray-700 text-sm font-semibold mb-2">Category:</label>
+                    <input type="text" id="dataCategory" placeholder="e.g., Fantasy Items"
+                           class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="dataPrice" class="block text-gray-700 text-sm font-semibold mb-2">Price:</label>
+                    <input type="number" id="dataPrice" placeholder="e.g., 99.99"
+                           class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-4">
+                <button onclick="hideAddDataModal()" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">Cancel</button>
+                <button onclick="pushData()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg">Push Data</button>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        const BACKEND_URL = 'http://127.0.0.1:5000';
+
+        function getSelectedViewType() {
+            return document.querySelector('input[name="viewType"]:checked').value;
+        }
+
+        function hideAllResults() {
+            ['result', 'pushResult', 'error', 'listResult'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            ['errorMessage', 'dataContent', 'dataSource', 'pushContent', 'listContent', 'listSource'].forEach(id => {
+                document.getElementById(id).innerHTML = '';
+            });
+        }
+
+        // Table Generation
+        function createSingleItemTable(data) {
+            let table = '<table><tr><th>Field</th><th>Value</th></tr>';
+            for (const [key, value] of Object.entries(data)) {
+                table += `<tr><td>${key}</td><td>${JSON.stringify(value)}</td></tr>`;
+            }
+            table += '</table>';
+            return table;
+        }
+
+        function createListTable(data) {
+            if (data.length === 0) return '<p>No data found.</p>';
+            const headers = ['_id', 'name', 'Actions'];
+            let table = '<table><thead><tr>';
+            headers.forEach(h => table += `<th>${h}</th>`);
+            table += '</tr></thead><tbody>';
+            data.forEach(row => {
+                table += '<tr>';
+                headers.forEach(h => {
+                    if (h === '_id') {
+                        table += `<td><a href="#" onclick="fetchData('${row[h]}'); return false;" class="text-blue-600 hover:underline">${row[h]}</a></td>`;
+                    } else if (h === 'Actions') {
+                        table += `<td><button onclick="deleteData('${row['_id']}')" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded-lg">Delete</button></td>`;
+                    } else {
+                        table += `<td><a href="#" onclick="fetchData('${row[h].replace(/'/g, "'")}'); return false;" class="text-blue-600 hover:underline">${row[h]}</a></td>`;
+                    }
+                });
+                table += '</tr>';
+            });
+            table += '</tbody></table>';
+            return table;
+        }
+
+        // Modal Controls
+        function showAddDataModal() {
+            hideAllResults();
+            document.getElementById('addDataModal').classList.remove('hidden');
+        }
+
+        function hideAddDataModal() {
+            document.getElementById('addDataModal').classList.add('hidden');
+        }
+
+        
+
+        // API Calls
+        async function fetchData(key) {
+            if (!key) {
+                alert('Please enter a key.');
+                return;
+            }
+            hideAllResults();
+
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+            const dataContent = document.getElementById('dataContent');
+            const dataSource = document.getElementById('dataSource');
+            const errorMessage = document.getElementById('errorMessage');
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/get_data/${key}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (getSelectedViewType() === 'table') {
+                        dataContent.innerHTML = createSingleItemTable(data.data);
+                    } else {
+                        dataContent.innerHTML = `<pre>${JSON.stringify(data.data, null, 2)}</pre>`;
+                    }
+                    dataSource.textContent = data.source;
+                    dataSource.className = `font-medium ${data.source === 'MongoDB' ? 'text-green-700' : 'text-red-700'}`;
+                    resultDiv.classList.remove('hidden');
+                } else {
+                    errorMessage.textContent = data.error || 'An unknown error occurred.';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorMessage.textContent = `Failed to connect to backend: ${err.message}.`;
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        async function listAllData() {
+            hideAllResults();
+            const listResultDiv = document.getElementById('listResult');
+            const errorDiv = document.getElementById('error');
+            const listContent = document.getElementById('listContent');
+            const listSource = document.getElementById('listSource');
+            const errorMessage = document.getElementById('errorMessage');
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/list_all_data`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (getSelectedViewType() === 'table') {
+                        listContent.innerHTML = createListTable(data.data);
+                    } else {
+                        listContent.innerHTML = `<pre>${JSON.stringify(data.data, null, 2)}</pre>`;
+                    }
+                    listSource.textContent = data.source;
+                    listSource.textContent = data.source;
+                    listSource.textContent = data.source;
+                    listSource.className = `font-medium ${data.source === 'MongoDB' ? 'text-green-700' : 'text-red-700'}`;
+                    listResultDiv.classList.remove('hidden');
+                } else {
+                    errorMessage.textContent = data.error || 'An unknown error occurred.';
+                    errorDiv.classList.remove('hidden');
+                }
+            }
+            catch (err) {
+                errorMessage.textContent = `Failed to connect to backend: ${err.message}.`;
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        async function pushData() {
+            const name = document.getElementById('dataName').value.trim();
+            const category = document.getElementById('dataCategory').value.trim();
+            const price = document.getElementById('dataPrice').value.trim();
+            
+            if (!name || !category || !price) {
+                alert('Please fill out all fields.');
+                return;
+            }
+            
+            hideAllResults();
+
+            const dataValue = { name, category, price: parseFloat(price) };
+            const pushResultDiv = document.getElementById('pushResult');
+            const errorDiv = document.getElementById('error');
+            const pushContent = document.getElementById('pushContent');
+            const errorMessage = document.getElementById('errorMessage');
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/set_data`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataValue)
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    let content = `<p>${data.message}</p>`;
+                    if(data.data) {
+                        if (getSelectedViewType() === 'table') {
+                            content += createSingleItemTable(data.data);
+                        } else {
+                            content += `<pre>${JSON.stringify(data.data, null, 2)}</pre>`;
+                        }
+                    }
+                    pushContent.innerHTML = content;
+                    pushResultDiv.classList.remove('hidden');
+                } else {
+                    errorMessage.textContent = data.error || 'An unknown error occurred.';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorMessage.textContent = `Failed to connect to backend: ${err.message}.`;
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        async function deleteData(key) {
+            if (!key) {
+                alert('Please enter a key.');
+                return;
+            }
+            hideAllResults();
+
+            const pushResultDiv = document.getElementById('pushResult');
+            const errorDiv = document.getElementById('error');
+            const pushContent = document.getElementById('pushContent');
+            const errorMessage = document.getElementById('errorMessage');
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/delete_data/${key}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    pushContent.innerHTML = `<p>${data.message}</p>`;
+                    pushResultDiv.classList.remove('hidden');
+                    listAllData(); // Refresh the list
+                } else {
+                    errorMessage.textContent = data.error || 'An unknown error occurred.';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorMessage.textContent = `Failed to connect to backend: ${err.message}.`;
+                errorDiv.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
