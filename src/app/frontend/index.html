@@ -49,8 +49,6 @@
                 Add New Data
             </button>
 
-            
-
             <button onclick="listAllData()"
                     class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
                 List All Data
@@ -107,8 +105,6 @@
             </div>
         </div>
     </div>
-
-    
 
     <script>
         const BACKEND_URL = 'http://127.0.0.1:5000';
@@ -170,8 +166,6 @@
         function hideAddDataModal() {
             document.getElementById('addDataModal').classList.add('hidden');
         }
-
-        
 
         // API Calls
         async function fetchData(key) {
