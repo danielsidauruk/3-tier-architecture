@@ -53,6 +53,16 @@
                     class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
                 List All Data
             </button>
+
+            <button onclick="checkBackendHealth()"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
+                Check Backend Health
+            </button>
+        </div>
+
+        <div id="healthResult" class="mt-8 hidden">
+            <p class="text-lg font-semibold text-gray-800 mb-2">Backend Health:</p>
+            <div id="healthContent" class="text-gray-900 text-sm whitespace-pre-wrap break-words"></div>
         </div>
 
         <div id="result" class="mt-8 hidden">
@@ -106,27 +116,37 @@
         </div>
     </div>
 
+    <script src="config.js"></script>
     <script>
-        const BACKEND_URL = 'http://127.0.0.1:5000';
+        const BACKEND_URL = window.appConfig.BACKEND_URL;
 
         function getSelectedViewType() {
             return document.querySelector('input[name="viewType"]:checked').value;
         }
 
         function hideAllResults() {
-            ['result', 'pushResult', 'error', 'listResult'].forEach(id => {
+            ['result', 'pushResult', 'error', 'listResult', 'healthResult'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
             });
-            ['errorMessage', 'dataContent', 'dataSource', 'pushContent', 'listContent', 'listSource'].forEach(id => {
+            ['errorMessage', 'dataContent', 'dataSource', 'pushContent', 'listContent', 'listSource', 'healthContent'].forEach(id => {
                 document.getElementById(id).innerHTML = '';
             });
         }
 
         // Table Generation
         function createSingleItemTable(data) {
-            let table = '<table><tr><th>Field</th><th>Value</th></tr>';
+            let table = '<table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>';
             for (const [key, value] of Object.entries(data)) {
-                table += `<tr><td>${key}</td><td>${JSON.stringify(value)}</td></tr>`;
+                table += `<tr><td>${key}</td><td>${JSON.stringify(value, null, 2)}</td></tr>`;
+            }
+            table += '</tbody></table>';
+            return table;
+        }
+
+        function createHealthCheckTable(data) {
+            let table = '<table><tr><th>Service</th><th>Status</th></tr>';
+            for (const [key, value] of Object.entries(data)) {
+                table += `<tr><td>${key}</td><td>${value}</td></tr>`;
             }
             table += '</table>';
             return table;
@@ -136,7 +156,13 @@
             if (data.length === 0) return '<p>No data found.</p>';
             const headers = ['_id', 'name', 'Actions'];
             let table = '<table><thead><tr>';
-            headers.forEach(h => table += `<th>${h}</th>`);
+            headers.forEach(h => {
+                if (h === 'Actions') {
+                    table += `<th style="text-align: center;">${h}</th>`;
+                } else {
+                    table += `<th>${h}</th>`;
+                }
+            });
             table += '</tr></thead><tbody>';
             data.forEach(row => {
                 table += '<tr>';
@@ -144,7 +170,7 @@
                     if (h === '_id') {
                         table += `<td><a href="#" onclick="fetchData('${row[h].replace(/'/g, "\'")}'); return false;" class="text-blue-600 hover:underline">${row[h]}</a></td>`;
                     } else if (h === 'Actions') {
-                        table += `<td><button onclick="deleteData('${row['_id']}')" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded-lg">Delete</button></td>`;
+                        table += `<td style="text-align: center;"><button onclick="deleteData('${row['_id']}')" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded-lg">Delete</button></td>`;
                     } else if (h === 'name') {
                         table += `<td>${row[h]}</td>`;
                     } else {
@@ -316,6 +342,35 @@
                     errorDiv.classList.remove('hidden');
                 }
             } catch (err) {
+                errorMessage.textContent = `Failed to connect to backend: ${err.message}.`;
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        async function checkBackendHealth() {
+            hideAllResults();
+            const healthResultDiv = document.getElementById('healthResult');
+            const errorDiv = document.getElementById('error');
+            const healthContent = document.getElementById('healthContent');
+            const errorMessage = document.getElementById('errorMessage');
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/health`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (getSelectedViewType() === 'table') {
+                        healthContent.innerHTML = createHealthCheckTable(data);
+                    } else {
+                        healthContent.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    }
+                    healthResultDiv.classList.remove('hidden');
+                } else {
+                    errorMessage.textContent = data.error || 'An unknown error occurred.';
+                    errorDiv.classList.remove('hidden');
+                }
+            }
+            catch (err) {
                 errorMessage.textContent = `Failed to connect to backend: ${err.message}.`;
                 errorDiv.classList.remove('hidden');
             }
