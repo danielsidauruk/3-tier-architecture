@@ -2,9 +2,8 @@ resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr_block
 
   tags = {
-    Name        = "${var.application_name}-${var.environment_name}-vpc"
+    Name        = "${var.application_name}-vpc"
     application = var.application_name
-    environment = var.environment_name
   }
 }
 
@@ -14,7 +13,7 @@ resource "aws_internet_gateway" "main" {
   depends_on = [aws_vpc.main]
 
   tags = {
-    Name = "${var.application_name}-${var.environment_name}-igw"
+    Name = "${var.application_name}-igw"
   }
 }
 
@@ -28,7 +27,6 @@ resource "random_shuffle" "az" {
 }
 
 locals {
-  # subnet maps...try target with shuffle...destroy
   azs_random = random_shuffle.az.result
   azs_slice  = slice(data.aws_availability_zones.available.names, 0, var.az_count)
 
@@ -57,9 +55,8 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "${var.application_name}-${var.environment_name}-public-subnet"
+    Name        = "${var.application_name}-public-subnet"
     application = var.application_name
-    environment = var.environment_name
   }
 }
 
@@ -74,7 +71,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name = "${var.application_name}-${var.environment_name}-public-rt"
+    Name = "${var.application_name}-public-rt"
   }
 }
 
@@ -97,17 +94,15 @@ resource "aws_subnet" "private" {
   cidr_block        = each.value.cidr_block
 
   tags = {
-    Name        = "${var.application_name}-${var.environment_name}-private-subnet"
+    Name        = "${var.application_name}-private-subnet"
     application = var.application_name
-    environment = var.environment_name
   }
 }
 
 resource "aws_eip" "nat" {
   tags = {
-    Name        = "${var.application_name}-${var.environment_name}-eip"
+    Name        = "${var.application_name}-eip"
     application = var.application_name
-    environment = var.environment_name
   }
 }
 
@@ -121,9 +116,8 @@ resource "aws_nat_gateway" "nat" {
   ]
 
   tags = {
-    Name        = "${var.application_name}-${var.environment_name}-nat"
+    Name        = "${var.application_name}-nat"
     application = var.application_name
-    environment = var.environment_name
   }
 
 }
@@ -140,7 +134,7 @@ resource "aws_route_table" "private" {
   }
 
   tags = {
-    Name = "${var.application_name}-${var.environment_name}-private-rt"
+    Name = "${var.application_name}-private-rt"
   }
 
 }
