@@ -1,9 +1,10 @@
+# General
 variable "application_name" {
   type        = string
   description = "Application's name."
 }
 
-# Instance
+# ElastiCache
 variable "cache_node_type" {
   description = "The instance type for the ElastiCache nodes."
   type        = string
@@ -25,6 +26,7 @@ variable "private_subnet_ids" {
   type        = list(string)
 }
 
+# Security
 variable "security_group_backend_id" {
   description = "The security group ID of the backend service."
   type        = string
