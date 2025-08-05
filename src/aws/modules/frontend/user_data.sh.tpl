@@ -41,7 +41,7 @@ server {
     }
 
     location /api/ {
-        proxy_pass http://${BACKEND_IP}:${BACKEND_PORT}/;
+        proxy_pass http://${BACKEND_DNS}:${BACKEND_PORT}/;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
