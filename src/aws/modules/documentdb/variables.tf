@@ -1,9 +1,10 @@
+# General
 variable "application_name" {
   type        = string
   description = "The name of the application or project."
 }
 
-# Cluster
+# DocumentDB Cluster
 variable "mongodb_username" {
   description = "The username for the DocumentDB cluster."
   type        = string
@@ -49,12 +50,13 @@ variable "private_subnet_ids" {
   type        = list(string)
 }
 
-variable "security_group_backend_id" {
-  description = "The security group ID of the backend service."
-  type        = string
-}
-
 variable "availability_zones" {
   description = "A list of Availability Zones for the DocumentDB cluster."
   type        = list(string)
+}
+
+# Security
+variable "security_group_backend_id" {
+  description = "The security group ID of the backend service."
+  type        = string
 }
