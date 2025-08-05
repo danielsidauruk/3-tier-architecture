@@ -11,10 +11,6 @@ terraform {
   }
 
   backend "s3" {
-    bucket  = "3-tier-architecture-tfstate"
-    region  = "ap-southeast-1"
-    key     = "dev/aws/terraform.tfstate"
-    encrypt = true
   }
 }
 
