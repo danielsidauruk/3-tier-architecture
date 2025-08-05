@@ -30,14 +30,45 @@ variable "key_name" {
   type        = string
 }
 
-# Backend
-variable "backend_app_port" {
-  description = "The port the backend application listens on."
+variable "repo_url" {
+  description = "The URL of the repository to be cloned."
   type        = string
 }
 
-variable "repo_url" {
-  description = "The URL of the repository to be cloned."
+# Frontend App
+variable "frontend_desired_capacity" {
+  description = "The desired number of instances in the ASG."
+  type        = number
+}
+
+variable "frontend_max_size" {
+  description = "The maximum number of instances in the ASG."
+  type        = number
+}
+
+variable "frontend_min_size" {
+  description = "The minimum number of instances in the ASG."
+  type        = number
+}
+
+# Backend App
+variable "backend_desired_capacity" {
+  description = "The desired number of instances in the ASG."
+  type        = number
+}
+
+variable "backend_max_size" {
+  description = "The maximum number of instances in the ASG."
+  type        = number
+}
+
+variable "backend_min_size" {
+  description = "The minimum number of instances in the ASG."
+  type        = number
+}
+
+variable "backend_app_port" {
+  description = "The port the backend application listens on."
   type        = string
 }
 

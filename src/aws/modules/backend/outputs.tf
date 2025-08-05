@@ -1,9 +1,9 @@
-output "security_group_backend_id" {
-  description = "The ID of the backend security group."
-  value       = aws_security_group.backend.id
+output "lb_dns" {
+  description = "DNS name of the backend load balancer"
+  value       = aws_lb.backend.dns_name
 }
 
-output "backend_private_ip" {
-  description = "The private IP address of the backend instance."
-  value       = aws_instance.backend.private_ip
+output "security_group_id" {
+  description = "Backend security group ID"
+  value       = aws_security_group.backend.id
 }

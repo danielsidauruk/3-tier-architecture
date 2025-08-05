@@ -44,7 +44,7 @@ source env/bin/activate || exit 1
 
 exec gunicorn \
   --workers 3 \
-  --bind "0.0.0.0:5000" \
+  --bind "0.0.0.0:${BACKEND_PORT}" \
   --access-logfile "${LOG_DIR}/gunicorn_access.log" \
   --error-logfile "${LOG_DIR}/gunicorn_error.log" \
   "main:app"
