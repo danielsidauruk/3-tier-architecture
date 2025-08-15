@@ -2,7 +2,7 @@ import logging
 from flask import Flask
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure
-from rediscluster import RedisCluster
+from redis import Redis
 from redis.exceptions import ConnectionError as RedisConnectionError
 from config import Config
 
@@ -41,21 +41,17 @@ class Database:
             logging.error(f"Unexpected error during MongoDB initialization: {e}")
 
     def _init_valkey(self):
-        """Initializes a cluster-aware Valkey/Redis client."""
+        """Initializes a Valkey/Redis client."""
         try:
-            startup_nodes = [
-                {"host": self.config.REDIS_PRIMARY_ENDPOINT, "port": self.config.REDIS_PORT}
-            ]
-            client = RedisCluster(
-                startup_nodes=startup_nodes,
+            client = Redis(
+                host=self.config.REDIS_PRIMARY_ENDPOINT,
+                port=self.config.REDIS_PORT,
                 decode_responses=True,
-                readonly_mode=True, # Enables read from replicas
-                skip_full_coverage_check=True, # Recommended for ElastiCache
                 socket_connect_timeout=5
             )
             client.ping()
             self.redis_client = client
-            logging.info(f"Connected to Valkey Cluster at {self.config.REDIS_PRIMARY_ENDPOINT}")
+            logging.info(f"Connected to Valkey at {self.config.REDIS_PRIMARY_ENDPOINT}")
         except RedisConnectionError as e:
             logging.error(f"Failed to connect to Valkey: {e}")
         except Exception as e:

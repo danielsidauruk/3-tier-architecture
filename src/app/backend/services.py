@@ -21,9 +21,9 @@ class DataService:
                 cached_data = self.db.redis_client.get(key)
                 if cached_data:
                     logging.info(f"Cache hit for key: {key}")
-                    return json.loads(cached_data), "Valkey"
+                    return json.loads(cached_data), "Redis (Valkey Engine)"
             except RedisConnectionError as e:
-                logging.warning(f"Valkey connection error during GET for key '{key}': {e}")
+                logging.warning(f"Redis (Valkey Engine) connection error during GET for key '{key}': {e}")
 
         if self.mongo_collection is not None:
             try:
@@ -34,9 +34,9 @@ class DataService:
                         try:
                             # This SETEX command will be routed to the primary
                             self.db.redis_client.setex(key, self.config.REDIS_CACHE_TTL, json.dumps(mongo_data))
-                            logging.info(f"Data for key {key} cached in Valkey.")
+                            logging.info(f"Data for key {key} cached in Redis (Valkey Engine).")
                         except RedisConnectionError as e:
-                            logging.warning(f"Valkey error during SETEX for key '{key}': {e}")
+                            logging.warning(f"Redis (Valkey Engine) error during SETEX for key '{key}': {e}")
                     return mongo_data, "MongoDB"
             except (ConnectionFailure, OperationFailure) as e:
                 logging.error(f"MongoDB error fetching data for key '{key}': {e}")
@@ -51,9 +51,9 @@ class DataService:
                 cached_list = self.db.redis_client.get("all_data_list")
                 if cached_list:
                     logging.info("Cache hit for all_data_list")
-                    return json.loads(cached_list), "Valkey"
+                    return json.loads(cached_list), "Redis (Valkey Engine)"
             except RedisConnectionError as e:
-                logging.warning(f"Valkey connection error during GET for all_data_list: {e}")
+                logging.warning(f"Redis (Valkey Engine) connection error during GET for all_data_list: {e}")
 
         if self.mongo_collection is not None:
             try:
@@ -63,9 +63,9 @@ class DataService:
                 if self.db.redis_client is not None:
                     try:
                         self.db.redis_client.setex("all_data_list", self.config.REDIS_CACHE_TTL, json.dumps(data_list))
-                        logging.info("All data list cached in Valkey")
+                        logging.info(f"All data list cached in Redis (Valkey Engine)")
                     except RedisConnectionError as e:
-                        logging.warning(f"Valkey error during SETEX for all_data_list: {e}")
+                        logging.warning(f"Redis (Valkey Engine) error during SETEX for all_data_list: {e}")
                 return data_list, "MongoDB"
             except (ConnectionFailure, OperationFailure) as e:
                 logging.error(f"MongoDB error listing all data: {e}")
@@ -90,7 +90,7 @@ class DataService:
                     self.db.redis_client.delete("all_data_list")
                     logging.info(f"Cache invalidated for key: {new_id} and all_data_list")
                 except RedisConnectionError as e:
-                    logging.warning(f"Valkey error during cache invalidation for key '{new_id}': {e}")
+                    logging.warning(f"Redis (Valkey Engine) error during cache invalidation for key '{new_id}': {e}")
             return data
         except (ConnectionFailure, OperationFailure) as e:
             logging.error(f"MongoDB error setting data: {e}")
@@ -111,7 +111,7 @@ class DataService:
                         self.db.redis_client.delete("all_data_list")
                         logging.info(f"Cache invalidated for key: {key} and all_data_list")
                     except RedisConnectionError as e:
-                        logging.warning(f"Valkey error during cache invalidation for key '{key}': {e}")
+                        logging.warning(f"Redis (Valkey Engine) error during cache invalidation for key '{key}': {e}")
                 return True
             return False
         except (ConnectionFailure, OperationFailure) as e:
