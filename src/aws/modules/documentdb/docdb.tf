@@ -27,7 +27,7 @@ resource "aws_docdb_cluster" "mongodb" {
 
 resource "aws_docdb_cluster_instance" "cluster_instances" {
   count              = var.db_node_count
-  identifier         = "docdb-cluster-instnace-${count.index}"
+  identifier         = "docdb-cluster-instance-${count.index}"
   cluster_identifier = aws_docdb_cluster.mongodb.id
   instance_class     = var.db_node_type
 }
