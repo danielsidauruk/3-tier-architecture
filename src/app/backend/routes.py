@@ -86,6 +86,6 @@ def health_check():
 
     status_code = 200 if mongo_status == "connected" or redis_status == "connected" else 503
     return jsonify({
-        "db": mongo_status,
-        "cache": redis_status,
+        "mongodb": mongo_status,
+        "redis": redis_status,
     }), status_code
