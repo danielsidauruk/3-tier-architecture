@@ -19,6 +19,8 @@ class Config:
     REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
     REDIS_CACHE_TTL = int(os.getenv("REDIS_CACHE_TTL", 300))
     TLS_CA_FILE = os.getenv("TLS_CA_FILE", "global-bundle.pem")
+    MONGODB_CLUSTER_IDENTIFIER = os.getenv("MONGODB_CLUSTER_IDENTIFIER", "")
+    REDIS_REPLICATION_GROUP_ID = os.getenv("REDIS_REPLICATION_GROUP_ID", "")
 
     @staticmethod
     def get_secret(secret_name: str, region_name: str) -> dict | str:

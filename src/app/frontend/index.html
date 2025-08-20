@@ -85,6 +85,7 @@
             <p class="text-lg font-semibold text-gray-800 mb-2">All Data List:</p>
             <div id="listContent" class="text-gray-900 text-sm whitespace-pre-wrap break-words"></div>
             <p class="text-sm text-gray-600 mt-4">Source: <span id="listSource" class="font-medium text-green-700"></span></p>
+            <div id="backendInfo" class="mt-4"></div>
         </div>
     </div>
 
@@ -250,6 +251,10 @@
                     }
                     listSource.textContent = data.source;
                     listSource.className = `font-medium ${data.source === 'MongoDB' ? 'text-green-700' : 'text-red-700'}`;
+                    
+                    const backendMetadata = data.backend_metadata;
+                    backendInfo.innerHTML = `<p class="text-sm text-gray-600 mt-4">Backend Origin:</p><pre class="text-sm text-gray-600">     instance ID : ${backendMetadata.instance_id}\n     Zone        : ${backendMetadata.availability_zone}</pre>`;
+
                     listResultDiv.classList.remove('hidden');
                 } else {
                     errorMessage.textContent = data.error || 'An unknown error occurred.';

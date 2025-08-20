@@ -10,6 +10,15 @@ def get_data_service():
     """Factory function to get a DataService instance."""
     return DataService(db, Config())
 
+@api_blueprint.route('/system-status', methods=['GET'])
+def get_system_status():
+    service = get_data_service()
+    try:
+        status = service.get_system_status()
+        return jsonify(status)
+    except Exception as e:
+        return jsonify({"error": f"Internal server error: {e}"}), 500
+
 @api_blueprint.route('/get_data/<string:key>', methods=['GET'])
 def get_data(key):
     service = get_data_service()
@@ -25,8 +34,8 @@ def get_data(key):
 def list_all_data():
     service = get_data_service()
     try:
-        data_list, source = service.list_all_data()
-        return jsonify({"data": data_list, "source": source})
+        data_list, source, backend_metadata = service.list_all_data()
+        return jsonify({"data": data_list, "source": source, "backend_metadata": backend_metadata})
     except Exception as e:
         return jsonify({"error": f"Internal server error: {e}"})
 
