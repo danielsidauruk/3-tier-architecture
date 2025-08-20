@@ -66,13 +66,14 @@ Restart=always
 
 Environment="MONGODB_ENDPOINT=${MONGODB_ENDPOINT}"
 Environment="MONGODB_PORT=${MONGODB_PORT}"
-Environment="REDIS_ENDPOINT=${REDIS_ENDPOINT}"
+Environment="REDIS_PRIMARY_ENDPOINT=${REDIS_PRIMARY_ENDPOINT}"
+Environment="REDIS_READER_ENDPOINT=${REDIS_READER_ENDPOINT}"
 Environment="REDIS_PORT=${REDIS_PORT}"
 Environment="MONGODB_USER=${MONGODB_USER}"
 Environment="SECRET_NAME=${SECRET_NAME}"
 Environment="PRIMARY_REGION=${PRIMARY_REGION}"
 
-StandardOutput=append:${LOG_DIR}/gunicorn_stdout.log
+StandardOutput=append: ${LOG_DIR}/gunicorn_stdout.log
 StandardError=append:${LOG_DIR}/gunicorn_stderr.log
 
 [Install]

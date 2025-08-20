@@ -1,7 +1,7 @@
 
 resource "aws_security_group" "redis" {
   name        = "${var.application_name}-redis-sg"
-  description = "Security Group for Redis cluster"
+  description = "Security Group for Redis replication group"
   vpc_id      = var.vpc_id
 
   egress {
@@ -19,8 +19,8 @@ resource "aws_security_group" "redis" {
 
 resource "aws_security_group_rule" "redis_ingress_backend" {
   type                     = "ingress"
-  from_port                = aws_elasticache_cluster.redis.port
-  to_port                  = aws_elasticache_cluster.redis.port
+  from_port                = aws_elasticache_replication_group.redis.port
+  to_port                  = aws_elasticache_replication_group.redis.port
   protocol                 = "tcp"
   source_security_group_id = var.security_group_backend_id
   security_group_id        = aws_security_group.redis.id

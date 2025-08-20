@@ -23,18 +23,19 @@ resource "aws_launch_template" "backend" {
   }
 
   user_data = base64encode(templatefile("${path.module}/user_data.sh.tpl", {
-    MONGODB_ENDPOINT = var.mongodb_endpoint
-    MONGODB_PORT     = tostring(var.mongodb_port)
-    REDIS_ENDPOINT   = var.redis_endpoint
-    REDIS_PORT       = tostring(var.redis_port)
-    MONGODB_USER     = var.mongodb_user
-    SECRET_NAME      = var.secret_name
-    PRIMARY_REGION   = var.primary_region
-    REPO_URL         = var.repo_url
-    BACKEND_PORT     = tostring(var.backend_app_port)
-    REPO_CLONE_DIR   = "/tmp/backend-repo-clone"
-    APP_INSTALL_DIR  = "/home/ubuntu/backend"
-    LOG_DIR          = "/var/log/gunicorn"
+    MONGODB_ENDPOINT       = var.mongodb_endpoint
+    MONGODB_PORT           = tostring(var.mongodb_port)
+    REDIS_PORT             = tostring(var.redis_port)
+    REDIS_PRIMARY_ENDPOINT = var.redis_primary_endpoint
+    REDIS_READER_ENDPOINT  = var.redis_reader_endpoint
+    MONGODB_USER           = var.mongodb_user
+    SECRET_NAME            = var.secret_name
+    PRIMARY_REGION         = var.primary_region
+    REPO_URL               = var.repo_url
+    BACKEND_PORT           = tostring(var.backend_app_port)
+    REPO_CLONE_DIR         = "/tmp/backend-repo-clone"
+    APP_INSTALL_DIR        = "/home/ubuntu/backend"
+    LOG_DIR                = "/var/log/gunicorn"
   }))
 
   tags = {

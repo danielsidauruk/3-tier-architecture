@@ -83,7 +83,12 @@ variable "redis_port" {
   type        = number
 }
 
-variable "redis_endpoint" {
+variable "redis_primary_endpoint" {
+  description = "The endpoint of the Redis cluster"
+  type        = string
+}
+
+variable "redis_reader_endpoint" {
   description = "The endpoint of the Redis cluster"
   type        = string
 }

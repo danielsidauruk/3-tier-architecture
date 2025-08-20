@@ -1,19 +1,26 @@
 
 resource "aws_elasticache_subnet_group" "redis" {
-  name       = "redis-subnetgroup"
+  name       = "redis-subnet-group"
   subnet_ids = var.private_subnet_ids
+
+  tags = {
+    Name        = "${var.application_name}-redis-subnet-group"
+    application = var.application_name
+  }
 }
 
-resource "aws_elasticache_cluster" "redis" {
-  cluster_id           = "rediscluster"
-  engine               = "redis"
-  engine_version       = "6.x"
-  node_type            = var.cache_node_type
-  num_cache_nodes      = var.cache_node_count
-  parameter_group_name = "default.redis6.x"
-  port                 = 6379
-  subnet_group_name    = aws_elasticache_subnet_group.redis.name
-  security_group_ids   = [aws_security_group.redis.id]
+resource "aws_elasticache_replication_group" "redis" {
+  replication_group_id       = "replication-group-redis"
+  description                = "Valkey replication group for ${var.application_name}"
+  engine                     = "valkey"
+  # engine_version             = "7.2" # Specify a valid Valkey version
+  node_type                  = var.cache_node_type
+  num_node_groups            = 1                        # For Cluster Mode Disabled, this is 1 shard
+  replicas_per_node_group    = var.cache_node_count - 1 # e.g., 3 nodes total = 1 primary + 2 replicas
+  automatic_failover_enabled = true
+  port                       = 6379
+  subnet_group_name          = aws_elasticache_subnet_group.redis.name
+  security_group_ids         = [aws_security_group.redis.id]
 
   tags = {
     Name        = "${var.application_name}-redis"
