@@ -1,22 +1,10 @@
-resource "aws_resourcegroups_group" "main" {
-  name = var.application_name
 
-  resource_query {
-    query = jsonencode(
-      {
-        ResourceTypeFilters = [
-          "AWS::AllSupported"
-        ]
-        TagFilters = [
-          {
-            Key    = "application"
-            Values = [var.application_name]
-          }
-        ]
-      }
-    )
-  }
+module "appregistry" {
+  source = "./modules/appregistry"
+
+  application_name = var.application_name
 }
+
 
 module "vpc" {
 
@@ -29,6 +17,7 @@ module "vpc" {
   security_group_backend_id = module.backend.security_group_id
 
 }
+
 
 module "backend" {
 
@@ -55,7 +44,8 @@ module "backend" {
   secret_name                = module.documentdb.secret_name
   security_group_redis_id    = module.elasticache.security_group_id
   redis_port                 = module.elasticache.port
-  redis_endpoint             = module.elasticache.endpoint
+  redis_primary_endpoint     = module.elasticache.primary_endpoint_address
+  redis_reader_endpoint      = module.elasticache.reader_endpoint_address
 
 }
 
