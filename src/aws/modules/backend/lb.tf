@@ -1,19 +1,19 @@
 
 resource "aws_lb" "backend" {
-  name               = "${var.application_name}-backend-lb"
+  name               = "backend-lb"
   internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.backend_lb_sg.id]
   subnets            = var.private_subnet_ids
 
   tags = {
-    Name        = "${var.application_name}-lb"
+    Name        = "lb"
     application = var.application_name
   }
 }
 
 resource "aws_lb_target_group" "backend" {
-  name     = "${var.application_name}-be-http-tg"
+  name     = "be-http-tg"
   port     = var.backend_app_port
   protocol = "HTTP"
   vpc_id   = var.vpc_id
@@ -29,7 +29,7 @@ resource "aws_lb_target_group" "backend" {
   }
 
   tags = {
-    Name        = "${var.application_name}-be-http-tg"
+    Name        = "be-http-tg"
     application = var.application_name
   }
 }

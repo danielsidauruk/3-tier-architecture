@@ -11,7 +11,7 @@ resource "aws_secretsmanager_secret" "mongodb_secret" {
   recovery_window_in_days = 0
 
   tags = {
-    Name             = "${var.application_name}-mongodb-secret"
+    Name             = "mongodb-secret"
     application_name = var.application_name
   }
 }

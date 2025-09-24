@@ -1,6 +1,6 @@
 
 resource "aws_security_group" "frontend" {
-  name        = "${var.application_name}-frontend-sg"
+  name        = "frontend-sg"
   description = "Allow SSH and web traffic"
   vpc_id      = var.vpc_id
 
@@ -35,13 +35,13 @@ resource "aws_security_group" "frontend" {
   }
 
   tags = {
-    Name             = "${var.application_name}-frontend-sg"
+    Name             = "frontend-sg"
     application_name = var.application_name
   }
 }
 
 resource "aws_security_group" "frontend_lb_sg" {
-  name        = "${var.application_name}-frontend-lb-sg"
+  name        = "frontend-lb-sg"
   description = "Security group for frontend load balancer"
   vpc_id      = var.vpc_id
 
@@ -69,7 +69,7 @@ resource "aws_security_group" "frontend_lb_sg" {
   }
 
   tags = {
-    Name        = "${var.application_name}-frontend-lb-sg"
+    Name        = "frontend-lb-sg"
     application = var.application_name
   }
 }

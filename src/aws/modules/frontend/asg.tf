@@ -16,7 +16,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_launch_template" "frontend" {
-  name_prefix            = "${var.application_name}-frontend-"
+  name_prefix            = "frontend-"
   image_id               = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   key_name               = var.key_name
@@ -33,7 +33,7 @@ resource "aws_launch_template" "frontend" {
   }))
 
   tags = {
-    Name        = "${var.application_name}-frontend"
+    Name        = "frontend"
     application = var.application_name
   }
 
@@ -43,7 +43,7 @@ resource "aws_launch_template" "frontend" {
 }
 
 resource "aws_autoscaling_group" "frontend" {
-  name                      = "${var.application_name}-frontend-asg"
+  name                      = "frontend-asg"
   desired_capacity          = var.desired_capacity
   max_size                  = var.max_size
   min_size                  = var.min_size
@@ -60,7 +60,7 @@ resource "aws_autoscaling_group" "frontend" {
 
   tag {
     key                 = "Name"
-    value               = "${var.application_name}-frontend"
+    value               = "frontend"
     propagate_at_launch = true
   }
 

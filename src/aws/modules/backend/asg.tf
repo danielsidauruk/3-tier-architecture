@@ -13,7 +13,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_launch_template" "backend" {
-  name_prefix            = "${var.application_name}-backend-"
+  name_prefix            = "backend-"
   image_id               = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   key_name               = var.key_name
@@ -39,7 +39,7 @@ resource "aws_launch_template" "backend" {
   }))
 
   tags = {
-    Name        = "${var.application_name}-backend"
+    Name        = "backend"
     application = var.application_name
   }
 
@@ -49,7 +49,7 @@ resource "aws_launch_template" "backend" {
 }
 
 resource "aws_autoscaling_group" "backend" {
-  name                      = "${var.application_name}-backend-asg"
+  name                      = "backend-asg"
   desired_capacity          = var.desired_capacity
   max_size                  = var.max_size
   min_size                  = var.min_size
@@ -66,7 +66,7 @@ resource "aws_autoscaling_group" "backend" {
 
   tag {
     key                 = "Name"
-    value               = "${var.application_name}-backend"
+    value               = "backend"
     propagate_at_launch = true
   }
 

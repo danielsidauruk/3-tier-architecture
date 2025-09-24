@@ -15,6 +15,12 @@ variable "cache_node_count" {
   type        = number
 }
 
+variable "engine_version" {
+  description = "The ElastiCache Valkey engine version."
+  type        = string
+  default     = "8.1"
+}
+
 # Networking
 variable "vpc_id" {
   description = "VPC ID."

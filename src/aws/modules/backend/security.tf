@@ -1,6 +1,6 @@
 
 resource "aws_security_group" "backend" {
-  name        = "${var.application_name}-backend-sg"
+  name        = "backend-sg"
   description = "Allow traffic to/from backend application"
   vpc_id      = var.vpc_id
 
@@ -29,7 +29,7 @@ resource "aws_security_group" "backend" {
   }
 
   tags = {
-    Name        = "${var.application_name}-backend-sg"
+    Name        = "backend-sg"
     application = var.application_name
   }
 }
@@ -55,7 +55,7 @@ resource "aws_security_group_rule" "backend_egress_redis" {
 }
 
 resource "aws_security_group" "backend_lb_sg" {
-  name        = "${var.application_name}-lb-sg"
+  name        = "lb-sg"
   description = "Security group for the load balancer"
   vpc_id      = var.vpc_id
 
@@ -74,7 +74,7 @@ resource "aws_security_group" "backend_lb_sg" {
   }
 
   tags = {
-    Name        = "${var.application_name}-lb-sg"
+    Name        = "lb-sg"
     application = var.application_name
   }
 }

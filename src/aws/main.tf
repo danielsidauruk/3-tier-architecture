@@ -6,16 +6,18 @@ module "appregistry" {
 }
 
 
-module "vpc" {
+module "network" {
 
-  source = "./modules/vpc"
+  source = "./modules/network"
 
-  application_name          = var.application_name
-  vpc_cidr_block            = var.vpc_cidr_block
-  az_count                  = var.az_count
-  primary_region            = var.primary_region
+  application_name = var.application_name
+  vpc_cidr_block   = var.vpc_cidr_block
+  az_count         = var.az_count
+  primary_region   = var.primary_region
+
   security_group_backend_id = module.backend.security_group_id
 
+  depends_on = [module.appregistry]
 }
 
 
@@ -34,8 +36,8 @@ module "backend" {
   max_size         = var.backend_max_size
   min_size         = var.backend_min_size
 
-  vpc_id                     = module.vpc.vpc_id
-  private_subnet_ids         = module.vpc.private_subnet_ids
+  vpc_id                     = module.network.vpc_id
+  private_subnet_ids         = module.network.private_subnet_ids
   security_group_frontend_id = module.frontend.security_group_id
   security_group_mongodb_id  = module.documentdb.security_group_id
   mongodb_port               = module.documentdb.port
@@ -46,6 +48,8 @@ module "backend" {
   redis_port                 = module.elasticache.port
   redis_primary_endpoint     = module.elasticache.primary_endpoint_address
   redis_reader_endpoint      = module.elasticache.reader_endpoint_address
+
+  depends_on = [module.appregistry]
 
 }
 
@@ -63,9 +67,11 @@ module "frontend" {
   max_size         = var.frontend_max_size
   min_size         = var.frontend_min_size
 
-  vpc_id            = module.vpc.vpc_id
-  public_subnet_ids = module.vpc.public_subnet_ids
+  vpc_id            = module.network.vpc_id
+  public_subnet_ids = module.network.public_subnet_ids
   be_lb_dns         = module.backend.lb_dns
+
+  depends_on = [module.appregistry]
 
 }
 
@@ -79,10 +85,12 @@ module "documentdb" {
   db_node_type     = var.db_node_type
   db_node_count    = var.db_node_count
 
-  vpc_id                    = module.vpc.vpc_id
-  private_subnet_ids        = module.vpc.private_subnet_ids
+  vpc_id                    = module.network.vpc_id
+  private_subnet_ids        = module.network.private_subnet_ids
   security_group_backend_id = module.backend.security_group_id
-  availability_zones        = module.vpc.availability_zones
+  availability_zones        = module.network.availability_zones
+
+  depends_on = [module.appregistry]
 
 }
 
@@ -95,8 +103,10 @@ module "elasticache" {
   cache_node_type  = var.cache_node_type
   cache_node_count = var.cache_node_count
 
-  vpc_id                    = module.vpc.vpc_id
-  private_subnet_ids        = module.vpc.private_subnet_ids
+  vpc_id                    = module.network.vpc_id
+  private_subnet_ids        = module.network.private_subnet_ids
   security_group_backend_id = module.backend.security_group_id
+
+  depends_on = [module.appregistry]
 
 }

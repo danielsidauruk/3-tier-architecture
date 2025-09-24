@@ -4,7 +4,7 @@ resource "aws_elasticache_subnet_group" "redis" {
   subnet_ids = var.private_subnet_ids
 
   tags = {
-    Name        = "${var.application_name}-redis-subnet-group"
+    Name        = "redis-subnet-group"
     application = var.application_name
   }
 }
@@ -20,10 +20,11 @@ resource "aws_elasticache_replication_group" "redis" {
   port                       = 6379
   subnet_group_name          = aws_elasticache_subnet_group.redis.name
   security_group_ids         = [aws_security_group.redis.id]
-  # engine_version             = "7.2" # Specify a valid Valkey version
+  multi_az_enabled           = true
+  engine_version             = var.engine_version
 
   tags = {
-    Name        = "${var.application_name}-redis"
+    Name        = "redis"
     application = var.application_name
   }
 }

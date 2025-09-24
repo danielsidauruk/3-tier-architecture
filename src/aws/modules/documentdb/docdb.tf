@@ -20,7 +20,7 @@ resource "aws_docdb_cluster" "mongodb" {
   apply_immediately       = true
 
   tags = {
-    Name             = "${var.application_name}-mongodb-cluster"
+    Name             = "mongodb-cluster"
     application_name = var.application_name
   }
 }

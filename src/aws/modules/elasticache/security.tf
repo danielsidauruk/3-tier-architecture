@@ -1,6 +1,6 @@
 
 resource "aws_security_group" "redis" {
-  name        = "${var.application_name}-redis-sg"
+  name        = "redis-sg"
   description = "Security Group for Redis replication group"
   vpc_id      = var.vpc_id
 
@@ -12,7 +12,7 @@ resource "aws_security_group" "redis" {
   }
 
   tags = {
-    Name        = "${var.application_name}-redis-sg"
+    Name        = "redis-sg"
     application = var.application_name
   }
 }

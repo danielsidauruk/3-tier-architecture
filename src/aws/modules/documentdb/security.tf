@@ -1,6 +1,6 @@
 
 resource "aws_security_group" "mongodb" {
-  name        = "${var.application_name}-mongodb-sg"
+  name        = "mongodb-sg"
   description = "Security group for DocumentDB cluster"
   vpc_id      = var.vpc_id
 
@@ -12,7 +12,7 @@ resource "aws_security_group" "mongodb" {
   }
 
   tags = {
-    Name             = "${var.application_name}-mongodb-sg"
+    Name             = "mongodb-sg"
     application_name = var.application_name
   }
 }
