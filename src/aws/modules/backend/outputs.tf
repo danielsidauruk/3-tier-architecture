@@ -8,7 +8,7 @@ output "security_group_id" {
   value       = aws_security_group.backend.id
 }
 
-output "asg_name" {
-  description = "Name of the backend Auto Scaling Group"
+output "autoscaling_group_name" {
+  description = "Name of the backend Auto Scaling group"
   value       = aws_autoscaling_group.backend.name
 }

@@ -1,17 +1,12 @@
-variable "application_name" {
-  type        = string
-  description = "The name of the application or project."
-}
-
 variable "primary_region" {
   type        = string
-  description = "The primary AWS region for resource deployment."
+  description = "Primary AWS region for deployment."
 }
 
 # VPC
-variable "vpc_cidr_block" {
+variable "cidr_block" {
   type        = string
-  description = "The CIDR block of the VPC where resources will be deployed."
+  description = "VPC CIDR block."
 }
 
 variable "az_count" {
@@ -21,80 +16,80 @@ variable "az_count" {
 
 # EC2
 variable "instance_type" {
-  description = "The EC2 instance type."
+  description = "EC2 instance type."
   type        = string
 }
 
 variable "key_name" {
-  description = "The name of the key pair to use for the instances."
+  description = "Key pair name for EC2."
   type        = string
 }
 
 variable "repo_url" {
-  description = "The URL of the repository to be cloned."
+  description = "Repository URL."
   type        = string
 }
 
 # Frontend App
 variable "frontend_desired_capacity" {
-  description = "The desired number of instances in the ASG."
+  description = "Desired instances in the ASG."
   type        = number
 }
 
 variable "frontend_max_size" {
-  description = "The maximum number of instances in the ASG."
+  description = "Maximum instances in the ASG."
   type        = number
 }
 
 variable "frontend_min_size" {
-  description = "The minimum number of instances in the ASG."
+  description = "Minimum instances in the ASG."
   type        = number
 }
 
 # Backend App
 variable "backend_desired_capacity" {
-  description = "The desired number of instances in the ASG."
+  description = "Desired instances in the ASG."
   type        = number
 }
 
 variable "backend_max_size" {
-  description = "The maximum number of instances in the ASG."
+  description = "Maximum instances in the ASG."
   type        = number
 }
 
 variable "backend_min_size" {
-  description = "The minimum number of instances in the ASG."
+  description = "Minimum instances in the ASG."
   type        = number
 }
 
 variable "backend_app_port" {
-  description = "The port the backend application listens on."
+  description = "Backend application port."
   type        = string
 }
 
 # DocumentDB
 variable "mongodb_username" {
-  description = "Master username for the DocumentDB cluster."
+  description = "DocumentDB master username."
   type        = string
 }
 
 variable "db_node_type" {
-  description = "The instance type for the DocumentDB nodes."
+  description = "DocumentDB node instance type."
   type        = string
 }
 
 variable "db_node_count" {
-  description = "The number of DocumentDB nodes."
+  description = "Number of DocumentDB nodes."
   type        = number
 }
 
 # ElastiCache
 variable "cache_node_type" {
-  description = "The instance type for the ElastiCache nodes."
+  description = "ElastiCache node instance type."
   type        = string
 }
 
 variable "cache_node_count" {
-  description = "The number of ElastiCache nodes."
+  description = "Number of ElastiCache nodes."
   type        = number
 }

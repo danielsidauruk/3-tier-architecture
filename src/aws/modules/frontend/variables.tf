@@ -1,13 +1,7 @@
-# General
-variable "application_name" {
-  type        = string
-  description = "The name of the application or project."
-}
-
 # Networking
 variable "vpc_id" {
   type        = string
-  description = "VPC id"
+  description = "VPC ID."
 }
 
 variable "public_subnet_ids" {
@@ -17,42 +11,42 @@ variable "public_subnet_ids" {
 
 # EC2 & ASG
 variable "instance_type" {
-  description = "The EC2 instance type."
+  description = "EC2 instance type."
   type        = string
 }
 
 variable "key_name" {
-  description = "The name of the key pair to use for the instances."
+  description = "Key pair name."
   type        = string
 }
 
 variable "desired_capacity" {
-  description = "The desired number of instances in the ASG"
+  description = "Desired number of instances in the ASG."
   type        = number
 }
 
 variable "max_size" {
-  description = "The maximum number of instances in the ASG"
+  description = "Maximum number of instances in the ASG."
   type        = number
 }
 
 variable "min_size" {
-  description = "The minimum number of instances in the ASG"
+  description = "Minimum number of instances in the ASG."
   type        = number
 }
 
 # Application/Repo
 variable "repo_url" {
-  description = "The URL of the repository to be cloned."
+  description = "Repository URL."
   type        = string
 }
 
 variable "backend_app_port" {
-  description = "The port the backend application listens on."
+  description = "Backend application port."
   type        = number
 }
 
 variable "be_lb_dns" {
-  description = "The DNS name of the load balancer"
+  description = "Backend load balancer's DNS name."
   type        = string
 }

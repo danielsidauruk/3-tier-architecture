@@ -1,22 +1,16 @@
-# General
-variable "application_name" {
-  type        = string
-  description = "Application's name."
-}
-
 # ElastiCache
 variable "cache_node_type" {
-  description = "The instance type for the ElastiCache nodes."
+  description = "ElastiCache node instance type."
   type        = string
 }
 
 variable "cache_node_count" {
-  description = "The number of ElastiCache nodes."
+  description = "Number of ElastiCache nodes."
   type        = number
 }
 
 variable "engine_version" {
-  description = "The ElastiCache Valkey engine version."
+  description = "ElastiCache Valkey engine version."
   type        = string
   default     = "8.1"
 }
@@ -34,6 +28,6 @@ variable "private_subnet_ids" {
 
 # Security
 variable "security_group_backend_id" {
-  description = "The security group ID of the backend service."
+  description = "Backend service security group ID."
   type        = string
 }

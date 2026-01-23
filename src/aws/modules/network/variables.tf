@@ -1,27 +1,22 @@
 # General
-variable "application_name" {
-  type        = string
-  description = "The name of the application or project."
-}
-
 variable "primary_region" {
-  description = "The primary AWS region."
+  description = "Primary AWS region."
   type        = string
 }
 
 # VPC
-variable "vpc_cidr_block" {
+variable "cidr_block" {
   type        = string
-  description = "The CIDR block of the VPC where resources will be deployed."
+  description = "CIDR block."
 }
 
 variable "az_count" {
-  description = "The number of availability zones to use."
+  description = "Number of Availability Zones."
   type        = number
 }
 
 # Security
 variable "security_group_backend_id" {
-  description = "The ID of the Backend security group."
+  description = "Backend Security Group ID."
   type        = string
 }

@@ -1,31 +1,25 @@
 
-module "appregistry" {
-  source = "./modules/appregistry"
-
-  application_name = var.application_name
-}
-
-
+# --- Networking ---
 module "network" {
-
   source = "./modules/network"
 
-  application_name = var.application_name
-  vpc_cidr_block   = var.vpc_cidr_block
-  az_count         = var.az_count
-  primary_region   = var.primary_region
-
+  cidr_block     = var.cidr_block
+  az_count       = var.az_count
+  primary_region = var.primary_region
   security_group_backend_id = module.backend.security_group_id
-
-  depends_on = [module.appregistry]
 }
 
+# --- IAM ---
+module "iam" {
+  source = "./modules/iam"
 
+  mongodb_secret_arn = module.documentdb.secret_arn
+}
+
+# --- Backend ---
 module "backend" {
-
   source = "./modules/backend"
 
-  application_name = var.application_name
   key_name         = var.key_name
   instance_type    = var.instance_type
   primary_region   = var.primary_region
@@ -42,23 +36,18 @@ module "backend" {
   security_group_mongodb_id  = module.documentdb.security_group_id
   mongodb_port               = module.documentdb.port
   mongodb_endpoint           = module.documentdb.endpoint
-  mongodb_secret_arn         = module.documentdb.secret_arn
   secret_name                = module.documentdb.secret_name
   security_group_redis_id    = module.elasticache.security_group_id
   redis_port                 = module.elasticache.port
   redis_primary_endpoint     = module.elasticache.primary_endpoint_address
   redis_reader_endpoint      = module.elasticache.reader_endpoint_address
-
-  depends_on = [module.appregistry]
-
+  secret_managers_role       = module.iam.secret_managers_role
 }
 
-
+# --- Frontend ---
 module "frontend" {
-
   source = "./modules/frontend"
 
-  application_name = var.application_name
   key_name         = var.key_name
   instance_type    = var.instance_type
   repo_url         = var.repo_url
@@ -70,17 +59,12 @@ module "frontend" {
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
   be_lb_dns         = module.backend.lb_dns
-
-  depends_on = [module.appregistry]
-
 }
 
-
+# --- DocumentDB ---
 module "documentdb" {
-
   source = "./modules/documentdb"
 
-  application_name = var.application_name
   mongodb_username = var.mongodb_username
   db_node_type     = var.db_node_type
   db_node_count    = var.db_node_count
@@ -89,24 +73,16 @@ module "documentdb" {
   private_subnet_ids        = module.network.private_subnet_ids
   security_group_backend_id = module.backend.security_group_id
   availability_zones        = module.network.availability_zones
-
-  depends_on = [module.appregistry]
-
 }
 
-
+# --- ElastiCache ---
 module "elasticache" {
-
   source = "./modules/elasticache"
 
-  application_name = var.application_name
   cache_node_type  = var.cache_node_type
   cache_node_count = var.cache_node_count
 
   vpc_id                    = module.network.vpc_id
   private_subnet_ids        = module.network.private_subnet_ids
   security_group_backend_id = module.backend.security_group_id
-
-  depends_on = [module.appregistry]
-
 }

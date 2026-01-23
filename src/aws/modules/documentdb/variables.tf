@@ -1,34 +1,28 @@
-# General
-variable "application_name" {
-  type        = string
-  description = "The name of the application or project."
-}
-
 # DocumentDB Cluster
 variable "mongodb_username" {
-  description = "The username for the DocumentDB cluster."
+  description = "DocumentDB cluster username."
   type        = string
 }
 
 variable "engine_version" {
-  description = "The DocumentDB engine version."
+  description = "DocumentDB engine version."
   type        = string
   default     = "4.0.0"
 }
 
 variable "db_node_type" {
-  description = "The instance type for the DocumentDB nodes."
+  description = "DocumentDB node instance type."
   type        = string
 }
 
 variable "db_node_count" {
-  description = "The number of DocumentDB nodes."
+  description = "Number of DocumentDB nodes."
   type        = number
 }
 
 # Backup
 variable "backup_retention_period" {
-  description = "The days to retain backups for."
+  description = "Days to retain backups."
   type        = number
   default     = 7
 }
@@ -41,7 +35,7 @@ variable "preferred_backup_window" {
 
 # Networking
 variable "vpc_id" {
-  description = "The ID of the VPC."
+  description = "VPC ID."
   type        = string
 }
 
@@ -51,12 +45,12 @@ variable "private_subnet_ids" {
 }
 
 variable "availability_zones" {
-  description = "A list of Availability Zones for the DocumentDB cluster."
+  description = "List of Availability Zones for the DocumentDB cluster."
   type        = list(string)
 }
 
 # Security
 variable "security_group_backend_id" {
-  description = "The security group ID of the backend service."
+  description = "Backend service security group ID."
   type        = string
 }
