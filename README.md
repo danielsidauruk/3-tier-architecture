@@ -54,7 +54,26 @@ A classic 3-tier architecture deployed on **AWS** using **Terraform**.
     terraform destroy
     ```
 
-## API Endpoints
+## How the App Works
+
+<p align="center">
+  <img src="diagram/3-tier-app.gif" alt="Demonstration" width="300"/>
+</p>
+
+
+### Data Retrieval Flow
+
+1. **Request:** Client ➔ **Backend**
+2. **Check:** Backend ➔ **Redis** (Search for data)
+3. **Decision:**
+   * **IF HIT:** Redis ➔ **Backend** ➔ **Client** ✅
+   * **IF MISS:** Redis ➔ **Backend** (Not found) ➔ **Step 4** 
+4. **Fetch:** Backend ➔ **MongoDB** (Get original data)
+5. **Update:** MongoDB ➔ **Backend** ➔ **Redis** (Save for next time)
+6. **Deliver:** Backend ➔ **Client** 🏁
+
+
+### API Endpoints
 
 The backend provides the following API endpoints:
 
