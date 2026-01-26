@@ -79,3 +79,6 @@ venv.bak/
 .DS_Store
 .Trashes
 Thumbs.db
+
+terraform.tfvars
+version.tf

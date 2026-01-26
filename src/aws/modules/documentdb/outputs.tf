@@ -22,3 +22,8 @@ output "secret_arn" {
   description = "Secrets Manager arn."
   value       = aws_secretsmanager_secret.mongodb_secret.arn
 }
+
+output "cluster_identifier" {
+  description = "DocumentDB cluster identifier."
+  value       = aws_docdb_cluster.mongodb.id
+}

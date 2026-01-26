@@ -11,10 +11,14 @@ terraform {
   }
 
   backend "s3" {
+    bucket = "<your-bucket-for-terraform-state>"
+    key    = "<your-key-for-terraform-state>"
+    region = "<your-aws-region-for-backend>"   # ex: "ap-southeast-1"
   }
 }
 
 # Configure the AWS Provider
 provider "aws" {
-  region = var.primary_region
+  profile = "<your-aws-profile>" # ex: "default"
+  region  = var.primary_region
 }

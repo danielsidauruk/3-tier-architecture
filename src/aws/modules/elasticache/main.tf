@@ -3,13 +3,6 @@ resource "aws_security_group" "redis" {
   name        = "redis-sg"
   description = "Security Group for Redis replication group"
   vpc_id      = var.vpc_id
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }
 
 resource "aws_security_group_rule" "redis_ingress_backend" {

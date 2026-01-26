@@ -1,0 +1,38 @@
+#==============================================================================
+# General Configuration
+#==============================================================================
+primary_region = "<your-primary-aws-region>" # ex: "ap-southeast-1"
+cidr_block     = "<your-cidr-block>"         # ex: "10.0.0.0/21"
+az_count       = "<your-az-count>"           # ex: 3
+
+#==============================================================================
+# EC2 Configuration
+#==============================================================================
+instance_type    = "<your-instance-type>"    # ex: "t2.micro"
+key_name         = "<your-ssh-key-name>"     # ex: "private_key"
+backend_app_port = "<your-backend-app-port>" # ex: 5000
+repo_url         = "<your-repo-url>"         # ex: "https://github.com/danielsidauruk/3-tier-architecture.git"
+
+#==============================================================================
+# DocumentDB Configuration
+#==============================================================================
+mongodb_username = "<your-mongodb-username>" # ex: "mongodbadmin"
+db_node_type     = "<your-db-node-type>"     # ex: "db.t3.medium"
+db_node_count    = "<your-db-node-count>"    # ex: 3
+
+#==============================================================================
+# ElastiCache Configuration
+#==============================================================================
+cache_node_type  = "<your-cache-node-type>"  # ex: "cache.t3.micro"
+cache_node_count = "<your-cache-node-count>" # ex: 3
+
+#==============================================================================
+# Auto Scaling Group Configuration
+#==============================================================================
+backend_desired_capacity = "<your-backend-desired-capacity>" # ex: 3
+backend_max_size         = "<your-backend-max-size>"         # ex: 3
+backend_min_size         = "<your-backend-min-size>"         # ex: 3
+
+frontend_desired_capacity = "<your-frontend-desired-capacity>" # ex: 3
+frontend_max_size         = "<your-frontend-max-size>"         # ex: 3
+frontend_min_size         = "<your-frontend-min-size>"         # ex: 3

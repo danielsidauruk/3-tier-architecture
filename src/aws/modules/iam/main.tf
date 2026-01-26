@@ -51,6 +51,10 @@ resource "aws_iam_policy" "resource_metadata_policy" {
           "elasticache:DescribeCacheClusters"
         ]
         Resource = "*"
+        # Resource = [
+        #   var.documentdb_arn,
+        #   var.elasticache_arn,
+        # ]
       }
     ]
   })

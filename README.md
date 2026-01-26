@@ -4,57 +4,36 @@ This project implements a 3-tier architecture using AWS, Terraform, and a Python
 
 ## Infrastructure Diagram
 
-<img src="diagram/3-tier-architecture.svg" alt="Infrastructure Diagram"/>
+<img src="diagram/3-tier-architecture-2.svg" alt="Infrastructure Diagram"/>
 
 ## Architecture
 
-This project is a classic 3-tier architecture:
+A classic 3-tier architecture deployed on **AWS** using **Terraform**.
 
-*   **Frontend:** A simple static frontend served by Nginx.
-*   **Backend:** A Flask application that provides a RESTful API for data manipulation. It uses Gunicorn as a WSGI server.
-*   **Database:** 
-    *   **DocumentDB:** A MongoDB-compatible database used as the main data store.
-    *   **ElastiCache:** A Redis in-memory data store used for caching.
+- **Frontend:** Static HTML site served by **Nginx**
+- **Backend:** **Flask** REST API written in **Python**, running on **Gunicorn**, using **PyMongo** for database access and **Redis** for caching
+- **Data Layer:**
+  - **Amazon DocumentDB** (MongoDB-compatible) as the primary datastore
+  - **Amazon ElastiCache (Redis)** for in-memory caching
 
-## Technologies Used
-
-*   **Infrastructure:**
-    *   AWS
-    *   Terraform
-*   **Backend:**
-    *   Python
-    *   Flask
-    *   Gunicorn
-    *   Pymongo (for DocumentDB)
-    *   Redis
-*   **Frontend:**
-    *   HTML
-    *   Nginx
 
 ## Project Structure
 
 ```
 .
-├── aws
-│   ├── main.tf
-│   ├── modules
-│   │   ├── backend
-│   │   ├── documentdb
-│   │   ├── elasticache
-│   │   ├── frontend
-│   │   └── network
-│   └── variables.tf
 ├── diagram
-│   └── 3-tier-architecture.svg
 └── src
-    ├── app
+    └── app
     │   ├── backend
-    │   │   ├── main.py
-    │   │   ├── requirements.txt
-    │   │   └── ...
     │   └── frontend
-    │       └── index.html
-    └── ...
+    └── aws
+        └── modules
+            ├── backend
+            ├── documentdb
+            ├── elasticache
+            ├── frontend
+            ├── iam
+            └── network
 ```
 
 ## Deployment
@@ -66,14 +45,6 @@ This project is a classic 3-tier architecture:
     terraform init
     ```
 3.  **Apply Terraform:**
-
-    First, lock in the Availability Zones (AZs) to prevent unexpected resource changes when the number of AZs is modified.    
-
-    ```bash
-    terraform apply -target=module.network.random_shuffle.az
-    ```
-
-    Once the AZs are selected, you can apply the rest of the infrastructure:
 
     ```bash
     terraform apply

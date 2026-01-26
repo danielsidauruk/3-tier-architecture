@@ -37,7 +37,7 @@ resource "aws_security_group" "backend" {
     from_port       = var.backend_app_port
     to_port         = var.backend_app_port
     protocol        = "tcp"
-    security_groups = [aws_security_group.backend_lb_sg.id]
+    security_groups = [aws_security_group.backend_lb.id]
     description     = "Allow app traffic from load balancer"
   }
 
@@ -70,8 +70,8 @@ resource "aws_security_group_rule" "backend_egress_redis" {
   description              = "Allow outbound to Redis Cluster"
 }
 
-resource "aws_security_group" "backend_lb_sg" {
-  name        = "lb-sg"
+resource "aws_security_group" "backend_lb" {
+  name        = "backend-lb-sg"
   description = "Security group for the load balancer"
   vpc_id      = var.vpc_id
 
@@ -95,7 +95,7 @@ resource "aws_lb" "backend" {
   name               = "backend-lb"
   internal           = true
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.backend_lb_sg.id]
+  security_groups    = [aws_security_group.backend_lb.id]
   subnets            = var.private_subnet_ids
 }
 

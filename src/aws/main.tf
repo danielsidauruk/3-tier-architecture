@@ -3,9 +3,9 @@
 module "network" {
   source = "./modules/network"
 
-  cidr_block     = var.cidr_block
-  az_count       = var.az_count
-  primary_region = var.primary_region
+  cidr_block                = var.cidr_block
+  az_count                  = var.az_count
+  primary_region            = var.primary_region
   security_group_backend_id = module.backend.security_group_id
 }
 
@@ -85,4 +85,22 @@ module "elasticache" {
   vpc_id                    = module.network.vpc_id
   private_subnet_ids        = module.network.private_subnet_ids
   security_group_backend_id = module.backend.security_group_id
+}
+
+# --- CloudWatch ---
+module "cloudwatch" {
+  source = "./modules/cloudwatch"
+
+  asg_backend              = module.backend.autoscaling_group_name
+  asg_frontend             = module.frontend.autoscaling_group_name
+  docdb_cluster_identifier = module.documentdb.cluster_identifier
+  elasticache_cluster_id   = module.elasticache.cluster_id
+  nat_gateway_id           = module.network.nat_gateway_id
+  primary_region           = var.primary_region
+  lb_backend_name          = module.backend.lb_name
+  lb_backend_arn_suffix    = module.backend.lb_arn_suffix
+  lb_frontend_name         = module.frontend.lb_name
+  lb_frontend_arn_suffix   = module.frontend.lb_arn_suffix
+
+  elasticache_member_clusters = module.elasticache.member_clusters
 }
